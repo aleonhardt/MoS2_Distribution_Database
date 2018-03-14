@@ -9,4 +9,6 @@ import MoS2_Analysis_Module as MX2
 
 
 path= "C:/Users/leonha54/Desktop/Automated Device Analysis/" \
-    + "MoS2_Distribution_Database/CurrentDatabaseFile/"
+    + "MoS2_Distribution_Database/CurrentDatabaseFiles/"
+    
+MX2.MoS2_Analysis(path)
