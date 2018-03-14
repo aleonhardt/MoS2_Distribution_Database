@@ -28,11 +28,14 @@ class MoS2_Analysis:
         for path, subdirList, files in os.walk(root):                
             for f in fnmatch.filter(files,'*.txt'):
                 
-                Data=np.loadtxt(os.path.abspath(os.path.join(path,f)), delimiter='\t',skiprows=1, unpack=True)
+                Data= np.genfromtxt(os.path.abspath(os.path.join(path,f)), 
+                                    autostrip=True, loose=True, delimiter='\t', dtype=None, names=True)
+
 ##has to be made more robust
-                deviceLength=Data[0]
-                deviceWidth=Data[1]
-                deviceCurrent=Data[2]
+                print(Data.dtype.names)
+                deviceLength=Data['Length_um']
+                deviceWidth=Data['Width_um']
+                deviceCurrent=Data['Drain_Current_Aum']
 
                 for i in range(0, len(deviceCurrent)):
                     if(deviceCurrent[i]>0):
