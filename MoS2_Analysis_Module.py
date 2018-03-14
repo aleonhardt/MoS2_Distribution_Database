@@ -25,6 +25,9 @@ class MoS2_Analysis:
         self.plotDistributions()
     
     def loadData(self,root):
+        deviceCurrent=[]
+        deviceWidth=[]
+        deviceLength=[]
         for path, subdirList, files in os.walk(root):                
             for f in fnmatch.filter(files,'*.txt'):
                 
@@ -33,22 +36,24 @@ class MoS2_Analysis:
 
 ##has to be made more robust
                 print(Data.dtype.names)
-                deviceLength=Data['Length_um']
-                deviceWidth=Data['Width_um']
-                deviceCurrent=Data['Drain_Current_Aum']
+                length=Data['Length_um']
+                width=Data['Width_um']
+                current=Data['Drain_Current_Aum']
 
-                for i in range(0, len(deviceCurrent)):
-                    if(deviceCurrent[i]>0):
-                        self.MaxCurrent.append(deviceCurrent[i])
-                        self.Width.append(deviceWidth[i])
-                        self.Length.append(deviceLength[i])
+                for i in range(0, len(current)):
+                    if(current[i]>0):
+                        deviceCurrent.append(current[i])
+                        deviceLength.append(length[i])
+                        deviceWidth.append(width[i])
                 
-    
+                self.MaxCurrent.append(deviceCurrent)
+                self.Width.append(deviceWidth)
+                self.Length.append(deviceLength)
     def createDistributions():
         print('Any')
     
     def calculateParameters(self):
-        logCurrent=[math.log(y) for y in self.MaxCurrent]
+        logCurrent=[math.log(y) for y in self.MaxCurrent[0]]
         self.stdDev=np.std(logCurrent)
         print(self.stdDev)
         self.mean=np.mean(self.MaxCurrent)
@@ -58,7 +63,8 @@ class MoS2_Analysis:
     def plotDistributions(self):
         # the histogram of the data
         plt.close('all')
-        plt.hist(self.MaxCurrent, bins=np.logspace(np.log10(1e-13),np.log10(1e-6), 50), edgecolor='black', linewidth=1.2)
+        for i in range(0,len(self.MaxCurrent)):
+           plt.hist(self.MaxCurrent[i], bins=np.logspace(np.log10(1e-13),np.log10(1e-6), 50), edgecolor='black', linewidth=1.2)
         plt.gca().set_xscale("log")
         plt.title('coefficient of variance (log-normal): '+str("{0:.2f}".format(self.coeffVariance)+'%'))
         plt.ylabel('Frequency')
