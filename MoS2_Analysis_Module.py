@@ -21,6 +21,7 @@ class MoS2_Analysis:
         self.Width=[]
         
         self.loadData(self.path)
+        self.plotDistributions()
     
     def loadData(self,root):
         for path, subdirList, files in os.walk(root):                
@@ -36,7 +37,7 @@ class MoS2_Analysis:
                 self.Length.append(deviceLength)
                 self.MaxCurrent.append(deviceCurrent)
     
-        print(self.MaxCurrent)
+        print(len(self.MaxCurrent[0]))
     
     def createDistributions():
         print('Any')
@@ -44,5 +45,9 @@ class MoS2_Analysis:
     def calculateStdDev():
         print('Any')
     
-    def plotDistributions():
-        print('Any')
+    def plotDistributions(self):
+        # the histogram of the data
+        plt.close('all')
+        plt.hist(self.MaxCurrent[0], bins=np.logspace(np.log10(1e-13),np.log10(1e-5), 50))
+        plt.gca().set_xscale("log")
+        plt.show()
