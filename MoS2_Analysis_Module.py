@@ -49,22 +49,26 @@ class MoS2_Analysis:
                 self.MaxCurrent.append(deviceCurrent)
                 self.Width.append(deviceWidth)
                 self.Length.append(deviceLength)
+                deviceCurrent=[]
+                deviceWidth=[]
+                deviceLength=[]
+                print(len(self.MaxCurrent))
     def createDistributions():
         print('Any')
     
     def calculateParameters(self):
-        logCurrent=[math.log(y) for y in self.MaxCurrent[0]]
+        logCurrent=[math.log(y) for y in self.MaxCurrent[1]]
         self.stdDev=np.std(logCurrent)
         print(self.stdDev)
-        self.mean=np.mean(self.MaxCurrent)
+        self.mean=np.exp(np.mean(logCurrent))
         print(self.mean)
         self.coeffVariance=np.sqrt(np.exp(self.stdDev*self.stdDev)-1)
     
     def plotDistributions(self):
         # the histogram of the data
         plt.close('all')
-        for i in range(0,len(self.MaxCurrent)):
-           plt.hist(self.MaxCurrent[i], bins=np.logspace(np.log10(1e-13),np.log10(1e-6), 50), edgecolor='black', linewidth=1.2)
+#        for i in range(0,len(self.MaxCurrent)):
+        plt.hist(self.MaxCurrent[1], bins=np.logspace(np.log10(1e-13),np.log10(1e-6), 50), edgecolor='black', linewidth=1.2)
         plt.gca().set_xscale("log")
         plt.title('coefficient of variance (log-normal): '+str("{0:.2f}".format(self.coeffVariance)+'%'))
         plt.ylabel('Frequency')
