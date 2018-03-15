@@ -7,8 +7,9 @@ Created on Thu Mar 15 10:44:39 2018
 
 class MoS2_Database_Node:
     
-    def __init__(self, length, width, maxCurrent, mean, coeffVariance, materialCode=0, grainSize=0, A1gE2g=0, 
+    def __init__(self, ID, length, width, maxCurrent, mean, coeffVariance, materialCode=0, grainSize=0, A1gE2g=0, 
                  processSteps=0, comments=""):
+        self.ID=ID
         self.length=length
         self.width=width
         self.maxCurrent=maxCurrent
