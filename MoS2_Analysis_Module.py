@@ -8,6 +8,7 @@ This is a temporary script file.
 
 import os
 import matplotlib.pyplot as plt
+import MoS2_Database_Node as MDN
 import fnmatch
 import math
 import numpy as np
@@ -19,10 +20,11 @@ class MoS2_Analysis:
         self.MaxCurrent=[]
         self.Length=[]
         self.Width=[]
+        self.MoS2_Database=[]
         
         self.loadData(self.path)
-        self.calculateParameters()
-        self.plotDistributions()
+        mean, stdDev, coeffVariance= self.calculateParameters(0)
+        self.plotDistributions(0,coeffVariance)
     
     def loadData(self,root):
         deviceCurrent=[]
@@ -56,21 +58,27 @@ class MoS2_Analysis:
     def createDistributions():
         print('Any')
     
-    def calculateParameters(self):
-        logCurrent=[math.log(y) for y in self.MaxCurrent[1]]
-        self.stdDev=np.std(logCurrent)
-        print(self.stdDev)
-        self.mean=np.exp(np.mean(logCurrent))
-        print(self.mean)
-        self.coeffVariance=np.sqrt(np.exp(self.stdDev*self.stdDev)-1)
-    
-    def plotDistributions(self):
+    def calculateParameters(self, index):
+        logCurrent=[math.log(y) for y in self.MaxCurrent[index]]
+        stdDev=np.std(logCurrent)
+        mean=np.exp(np.mean(logCurrent))
+        coeffVariance=np.sqrt(np.exp(stdDev*stdDev)-1)
+        return mean, stdDev, coeffVariance
+        
+    def createDatabaseNodes(self,length, width, maxCurrent, mean, coeffVariance):
+       self.MoS2_Database.append(MDN.MoS2_Database_Node(length, width, maxCurrent, mean, coeffVariance))
+        
+         
+    def saveDatabase(self):
+         print('Any')
+         
+    def plotDistributions(self, index, coeffVariance):
         # the histogram of the data
         plt.close('all')
 #        for i in range(0,len(self.MaxCurrent)):
-        plt.hist(self.MaxCurrent[1], bins=np.logspace(np.log10(1e-13),np.log10(1e-6), 50), edgecolor='black', linewidth=1.2)
+        plt.hist(self.MaxCurrent[index], bins=np.logspace(np.log10(1e-13),np.log10(1e-6), 50), edgecolor='black', linewidth=1.2)
         plt.gca().set_xscale("log")
-        plt.title('coefficient of variance (log-normal): '+str("{0:.2f}".format(self.coeffVariance)+'%'))
+        plt.title('coefficient of variance (log-normal): '+str("{0:.2f}".format(coeffVariance)+'%'))
         plt.ylabel('Frequency')
         plt.xlabel('Max Current (A/$\mu$m)')
         plt.show()
